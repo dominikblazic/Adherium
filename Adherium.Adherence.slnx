@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="README.md" />
+    <File Path=".gitignore" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Adherium.Adherence.Api/Adherium.Adherence.Api.csproj" />
+    <Project Path="src/Adherium.Adherence.Core/Adherium.Adherence.Core.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Adherium.Adherence.Core.Tests/Adherium.Adherence.Core.Tests.csproj" />
+  </Folder>
+</Solution>

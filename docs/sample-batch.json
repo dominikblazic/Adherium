@@ -1,0 +1,155 @@
+{
+  "_readme": "Synthetic sample data for the Adherium take-home. No PHI. All timestamps UTC. This is one suggested dataset; you may extend it (include any additions in your repo). It deliberately contains edge cases - how you handle them is part of the exercise.",
+  "prescriptions": [
+    {
+      "id": 100,
+      "patientId": 1,
+      "medicationType": "controller",
+      "dosesPerAdmin": 2,
+      "timesPerDay": 2,
+      "startUtc": "2026-03-01T00:00:00Z",
+      "endUtc": "2026-03-04T23:59:59Z"
+    },
+    {
+      "id": 200,
+      "patientId": 1,
+      "medicationType": "controller",
+      "dosesPerAdmin": 1,
+      "timesPerDay": 2,
+      "startUtc": "2026-03-05T00:00:00Z",
+      "endUtc": null
+    },
+    {
+      "id": 300,
+      "patientId": 2,
+      "medicationType": "reliever",
+      "dosesPerAdmin": 1,
+      "timesPerDay": 2,
+      "startUtc": "2026-03-10T00:00:00Z",
+      "endUtc": null
+    }
+  ],
+  "deviceAssignments": [
+    {
+      "id": 1,
+      "deviceSerial": "DEV-AAA",
+      "prescriptionId": 100,
+      "startUtc": "2026-03-01T00:00:00Z",
+      "endUtc": "2026-03-04T23:59:59Z"
+    },
+    {
+      "id": 2,
+      "deviceSerial": "DEV-AAA",
+      "prescriptionId": 200,
+      "startUtc": "2026-03-05T00:00:00Z",
+      "endUtc": "2026-03-07T23:59:59Z"
+    },
+    {
+      "id": 3,
+      "deviceSerial": "DEV-AAA",
+      "prescriptionId": 300,
+      "startUtc": "2026-03-10T00:00:00Z",
+      "endUtc": null
+    }
+  ],
+  "batch": {
+    "events": [
+      {
+        "deviceSerial": "DEV-AAA",
+        "deviceLogId": 11,
+        "eventTimestampUtc": "2026-03-02T08:00:00Z",
+        "eventType": "Actuation"
+      },
+      {
+        "deviceSerial": "DEV-AAA",
+        "deviceLogId": 12,
+        "eventTimestampUtc": "2026-03-02T08:01:00Z",
+        "eventType": "Actuation"
+      },
+      {
+        "deviceSerial": "DEV-AAA",
+        "deviceLogId": 13,
+        "eventTimestampUtc": "2026-03-02T20:00:00Z",
+        "eventType": "Actuation"
+      },
+      {
+        "deviceSerial": "DEV-AAA",
+        "deviceLogId": 14,
+        "eventTimestampUtc": "2026-03-02T20:01:00Z",
+        "eventType": "Actuation"
+      },
+      {
+        "deviceSerial": "DEV-AAA",
+        "deviceLogId": 15,
+        "eventTimestampUtc": "2026-03-03T08:00:00Z",
+        "eventType": "Actuation"
+      },
+      {
+        "deviceSerial": "DEV-AAA",
+        "deviceLogId": 16,
+        "eventTimestampUtc": "2026-03-03T08:01:00Z",
+        "eventType": "Actuation"
+      },
+      {
+        "deviceSerial": "DEV-AAA",
+        "deviceLogId": 17,
+        "eventTimestampUtc": "2026-03-03T08:02:00Z",
+        "eventType": "Actuation"
+      },
+      {
+        "deviceSerial": "DEV-AAA",
+        "deviceLogId": 18,
+        "eventTimestampUtc": "2026-03-03T20:00:00Z",
+        "eventType": "Actuation"
+      },
+      {
+        "deviceSerial": "DEV-AAA",
+        "deviceLogId": 19,
+        "eventTimestampUtc": "2026-03-03T20:05:00Z",
+        "eventType": "Actuation"
+      },
+      {
+        "deviceSerial": "DEV-AAA",
+        "deviceLogId": 11,
+        "eventTimestampUtc": "2026-03-02T08:00:00Z",
+        "eventType": "Actuation"
+      },
+      {
+        "deviceSerial": "DEV-AAA",
+        "deviceLogId": 30,
+        "eventTimestampUtc": "2026-03-06T09:00:00Z",
+        "eventType": "Actuation"
+      },
+      {
+        "deviceSerial": "DEV-AAA",
+        "deviceLogId": 40,
+        "eventTimestampUtc": "2026-03-08T10:00:00Z",
+        "eventType": "Actuation"
+      },
+      {
+        "deviceSerial": "DEV-AAA",
+        "deviceLogId": 50,
+        "eventTimestampUtc": "2026-03-11T07:00:00Z",
+        "eventType": "Actuation"
+      },
+      {
+        "deviceSerial": "DEV-AAA",
+        "deviceLogId": 51,
+        "eventTimestampUtc": "2026-03-11T19:00:00Z",
+        "eventType": "Actuation"
+      },
+      {
+        "deviceSerial": "DEV-ZZZ",
+        "deviceLogId": 1,
+        "eventTimestampUtc": "2026-03-06T12:00:00Z",
+        "eventType": "Actuation"
+      },
+      {
+        "deviceSerial": "DEV-AAA",
+        "deviceLogId": 31,
+        "eventTimestampUtc": "2026-03-06T09:05:00Z",
+        "eventType": "PeakInhalationFlow"
+      }
+    ]
+  }
+}
