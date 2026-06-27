@@ -1,18 +1,10 @@
 using System.Collections.Concurrent;
+using Adherium.Adherence.Core.Contracts.Repositories;
 using Adherium.Adherence.Core.Domain;
 
-namespace Adherium.Adherence.Core.Stores;
+namespace Adherium.Adherence.Core.Repositories;
 
-/// <summary>Read access to the seeded prescriptions.</summary>
-public interface IPrescriptionStore
-{
-    Prescription? GetById(int id);
-    IReadOnlyCollection<Prescription> GetAll();
-    void Add(Prescription prescription);
-}
-
-/// <summary>In-memory prescription store. Swap for a repository when persistence is added.</summary>
-public sealed class InMemoryPrescriptionStore : IPrescriptionStore
+public sealed class PrescriptionRepository : IPrescriptionRepository
 {
     private readonly ConcurrentDictionary<int, Prescription> _byId = new();
 

@@ -3,6 +3,7 @@ using Adherium.Adherence.Api.Endpoints;
 using Adherium.Adherence.Api.Seeding;
 using Adherium.Adherence.Core.Extensions;
 using Asp.Versioning;
+using Asp.Versioning.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,7 +44,18 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.MapSensorLogEndpoints();
+// Declared once and shared by every endpoint module: the set of supported API versions and the
+// versioned URL prefix. New endpoint groups just hang off `api` and pick the version they serve.
+ApiVersionSet versionSet = app.NewApiVersionSet()
+    .HasApiVersion(new ApiVersion(1, 0))
+    .ReportApiVersions()
+    .Build();
+
+RouteGroupBuilder api = app
+    .MapGroup("/api/v{version:apiVersion}")
+    .WithApiVersionSet(versionSet);
+
+api.MapSensorLogEndpoints();
 
 app.Run();
 

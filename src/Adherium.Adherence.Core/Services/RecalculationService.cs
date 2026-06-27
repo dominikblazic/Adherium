@@ -1,17 +1,14 @@
-using Adherium.Adherence.Core.Contracts;
+using Adherium.Adherence.Core.Contracts.Repositories;
+using Adherium.Adherence.Core.Contracts.Services;
 using Adherium.Adherence.Core.Domain;
 using Adherium.Adherence.Core.Results;
-using Adherium.Adherence.Core.Stores;
 
 namespace Adherium.Adherence.Core.Services;
 
-
-
-/// <inheritdoc />
 public sealed class RecalculationService(
-    IAttributionService attribution,
-    IStampedLogStore stampedLogs,
-    IAdherenceCalculator calculator) : IRecalculationService
+    IAttributionService attributionService,
+    IStampedLogRepository stampedLogRepository,
+    IAdherenceCalculator adherenceCalculator) : IRecalculationService
 {
     public RecalculationResult Recalculate(IReadOnlyCollection<LogEvent> events)
     {
@@ -23,7 +20,7 @@ public sealed class RecalculationService(
 
         foreach (var @event in events)
         {
-            var result = attribution.Resolve(@event.DeviceSerial, @event.EventTimestampUtc);
+            var result = attributionService.Resolve(@event.DeviceSerial, @event.EventTimestampUtc);
 
             if (!result.IsAttributed)
             {
@@ -42,7 +39,7 @@ public sealed class RecalculationService(
                 PatientId = prescription.PatientId,
             };
 
-            var added = stampedLogs.TryAdd(stamped);
+            var added = stampedLogRepository.TryAdd(stamped);
             outcomes.Add(added ? Processed(@event) : Duplicate(@event));
 
             // A day is "affected" whenever this batch touches it — newly stored OR a re-sent
@@ -53,11 +50,11 @@ public sealed class RecalculationService(
 
         // Recompute from the full stored set (not just this batch) so the summaries are always the
         // authoritative recalculated state for the affected days.
-        var logsToScore = stampedLogs
+        var logsToScore = stampedLogRepository
             .GetForPrescriptions(affectedPrescriptions)
             .Where(log => affectedDays.Contains((log.PrescriptionId, log.UtcDate)));
 
-        var daily = calculator.Calculate(logsToScore);
+        var daily = adherenceCalculator.Calculate(logsToScore);
 
         return new RecalculationResult
         {

@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Adherium.Adherence.Core.Contracts.Repositories;
 using Adherium.Adherence.Core.Domain;
-using Adherium.Adherence.Core.Stores;
 
 namespace Adherium.Adherence.Api.Seeding;
 
@@ -11,8 +11,8 @@ namespace Adherium.Adherence.Api.Seeding;
 /// those are what you POST to the endpoint.
 /// </summary>
 public sealed partial class SampleDataSeeder(
-    IPrescriptionStore prescriptions,
-    IDeviceAssignmentStore assignments,
+    IPrescriptionRepository prescriptionRepository,
+    IDeviceAssignmentRepository deviceAssignmentRepository,
     ILogger<SampleDataSeeder> logger)
 {
     private static readonly JsonSerializerOptions s_jsonOptions = new(JsonSerializerDefaults.Web)
@@ -34,12 +34,12 @@ public sealed partial class SampleDataSeeder(
 
         foreach (var prescription in document.Prescriptions)
         {
-            prescriptions.Add(prescription.ToDomain());
+            prescriptionRepository.Add(prescription.ToDomain());
         }
 
         foreach (var assignment in document.DeviceAssignments)
         {
-            assignments.Add(assignment.ToDomain());
+            deviceAssignmentRepository.Add(assignment.ToDomain());
         }
 
         LogSeeded(document.Prescriptions.Count, document.DeviceAssignments.Count);

@@ -1,30 +1,26 @@
 using Adherium.Adherence.Core.Domain;
+using Adherium.Adherence.Core.Repositories;
 using Adherium.Adherence.Core.Results;
 using Adherium.Adherence.Core.Services;
-using Adherium.Adherence.Core.Stores;
 using static Adherium.Adherence.Core.Tests.TestData;
 
 namespace Adherium.Adherence.Core.Tests;
 
-/// <summary>
-/// End-to-end of the core orchestration (attribute → stamp idempotently → recalculate), wired with
-/// the real in-memory stores. This is the behaviour the API endpoint exposes.
-/// </summary>
 public sealed class RecalculationServiceTests
 {
     private static RecalculationService BuildService()
     {
-        var assignments = new InMemoryDeviceAssignmentStore();
+        var assignments = new DeviceAssignmenRepository();
         assignments.Add(Assignment(1, "DEV-AAA", 100, "2026-03-01T00:00:00Z", "2026-03-04T23:59:59Z"));
         assignments.Add(Assignment(2, "DEV-AAA", 200, "2026-03-05T00:00:00Z", "2026-03-07T23:59:59Z"));
         assignments.Add(Assignment(3, "DEV-AAA", 300, "2026-03-10T00:00:00Z"));
 
-        var prescriptions = new InMemoryPrescriptionStore();
+        var prescriptions = new PrescriptionRepository();
         prescriptions.Add(Prescription(100, dosesPerAdmin: 2, timesPerDay: 2, patientId: 1));
         prescriptions.Add(Prescription(200, dosesPerAdmin: 1, timesPerDay: 2, patientId: 1));
         prescriptions.Add(Prescription(300, type: MedicationType.Reliever, patientId: 2));
 
-        var stampedLogs = new InMemoryStampedLogStore();
+        var stampedLogs = new StampedLogRepository();
         var calculator = new AdherenceCalculator(prescriptions);
         var attribution = new AttributionService(assignments, prescriptions);
         return new RecalculationService(attribution, stampedLogs, calculator);

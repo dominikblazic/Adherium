@@ -1,21 +1,10 @@
 using System.Collections.Concurrent;
+using Adherium.Adherence.Core.Contracts.Repositories;
 using Adherium.Adherence.Core.Domain;
 
-namespace Adherium.Adherence.Core.Stores;
+namespace Adherium.Adherence.Core.Repositories;
 
-/// <summary>Read access to the seeded device-assignment history.</summary>
-public interface IDeviceAssignmentStore
-{
-    /// <summary>All assignments ever recorded for a serial (empty if the device is unknown).</summary>
-    IReadOnlyCollection<DeviceAssignment> GetBySerial(string deviceSerial);
-
-    bool DeviceExists(string deviceSerial);
-
-    void Add(DeviceAssignment assignment);
-}
-
-/// <summary>In-memory device-assignment store, indexed by serial.</summary>
-public sealed class InMemoryDeviceAssignmentStore : IDeviceAssignmentStore
+public sealed class DeviceAssignmenRepository : IDeviceAssignmentRepository
 {
     private readonly ConcurrentDictionary<string, List<DeviceAssignment>> _bySerial =
         new(StringComparer.OrdinalIgnoreCase);

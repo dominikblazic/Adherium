@@ -1,6 +1,6 @@
 using Adherium.Adherence.Core.Domain;
+using Adherium.Adherence.Core.Repositories;
 using Adherium.Adherence.Core.Services;
-using Adherium.Adherence.Core.Stores;
 using static Adherium.Adherence.Core.Tests.TestData;
 
 namespace Adherium.Adherence.Core.Tests;
@@ -15,13 +15,13 @@ public sealed class AttributionServiceTests
         IEnumerable<DeviceAssignment> assignments,
         IEnumerable<Prescription> prescriptions)
     {
-        var assignmentStore = new InMemoryDeviceAssignmentStore();
+        var assignmentStore = new DeviceAssignmenRepository();
         foreach (var a in assignments)
         {
             assignmentStore.Add(a);
         }
 
-        var prescriptionStore = new InMemoryPrescriptionStore();
+        var prescriptionStore = new PrescriptionRepository();
         foreach (var p in prescriptions)
         {
             prescriptionStore.Add(p);

@@ -1,6 +1,6 @@
-using Adherium.Adherence.Core.Contracts;
+using Adherium.Adherence.Core.Contracts.Repositories;
+using Adherium.Adherence.Core.Contracts.Services;
 using Adherium.Adherence.Core.Domain;
-using Adherium.Adherence.Core.Stores;
 
 namespace Adherium.Adherence.Core.Services;
 
@@ -31,18 +31,18 @@ public readonly record struct AttributionResult(AttributionStatus Status, Prescr
 }
 
 public sealed class AttributionService(
-    IDeviceAssignmentStore assignments,
-    IPrescriptionStore prescriptions) : IAttributionService
+    IDeviceAssignmentRepository deviceAssignmentRepository,
+    IPrescriptionRepository prescriptionRepository) : IAttributionService
 {
     public AttributionResult Resolve(string deviceSerial, DateTimeOffset eventTimestampUtc)
     {
-        if (!assignments.DeviceExists(deviceSerial))
+        if (!deviceAssignmentRepository.DeviceExists(deviceSerial))
         {
             return AttributionResult.Failed(AttributionStatus.UnknownDevice);
         }
 
         // If windows ever overlap (a data error), prefer the one that started most recently.
-        var active = assignments.GetBySerial(deviceSerial)
+        var active = deviceAssignmentRepository.GetBySerial(deviceSerial)
             .Where(a => a.Covers(eventTimestampUtc))
             .OrderByDescending(a => a.StartUtc)
             .FirstOrDefault();
@@ -52,7 +52,7 @@ public sealed class AttributionService(
             return AttributionResult.Failed(AttributionStatus.NoActiveAssignment);
         }
 
-        var prescription = prescriptions.GetById(active.PrescriptionId);
+        var prescription = prescriptionRepository.GetById(active.PrescriptionId);
         return prescription is null
             ? AttributionResult.Failed(AttributionStatus.MissingPrescription)
             : AttributionResult.Attributed(prescription);

@@ -1,11 +1,11 @@
-using Adherium.Adherence.Core.Contracts;
+using Adherium.Adherence.Core.Contracts.Repositories;
+using Adherium.Adherence.Core.Contracts.Services;
 using Adherium.Adherence.Core.Domain;
 using Adherium.Adherence.Core.Results;
-using Adherium.Adherence.Core.Stores;
 
 namespace Adherium.Adherence.Core.Services;
 
-public sealed class AdherenceCalculator(IPrescriptionStore prescriptions) : IAdherenceCalculator
+public sealed class AdherenceCalculator(IPrescriptionRepository prescriptionRepository) : IAdherenceCalculator
 {
     public IReadOnlyList<DailyAdherence> Calculate(IEnumerable<StampedLog> stampedLogs)
     {
@@ -19,7 +19,7 @@ public sealed class AdherenceCalculator(IPrescriptionStore prescriptions) : IAdh
 
         foreach (var group in groups)
         {
-            var prescription = prescriptions.GetById(group.Key.PrescriptionId);
+            var prescription = prescriptionRepository.GetById(group.Key.PrescriptionId);
             if (prescription is null)
             {
                 continue; // Attribution guarantees the prescription exists; defensive only.

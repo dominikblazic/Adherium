@@ -1,6 +1,7 @@
-using Adherium.Adherence.Core.Contracts;
+using Adherium.Adherence.Core.Contracts.Repositories;
+using Adherium.Adherence.Core.Contracts.Services;
+using Adherium.Adherence.Core.Repositories;
 using Adherium.Adherence.Core.Services;
-using Adherium.Adherence.Core.Stores;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Adherium.Adherence.Core.Extensions;
@@ -12,9 +13,9 @@ public static class ServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(services);
 
         // Stores hold state for the process lifetime, so they are singletons.
-        services.AddSingleton<IPrescriptionStore, InMemoryPrescriptionStore>();
-        services.AddSingleton<IDeviceAssignmentStore, InMemoryDeviceAssignmentStore>();
-        services.AddSingleton<IStampedLogStore, InMemoryStampedLogStore>();
+        services.AddSingleton<IPrescriptionRepository, PrescriptionRepository>();
+        services.AddSingleton<IDeviceAssignmentRepository, DeviceAssignmenRepository>();
+        services.AddSingleton<IStampedLogRepository, StampedLogRepository>();
 
         // Services are stateless.
         services.AddSingleton<IAttributionService, AttributionService>();

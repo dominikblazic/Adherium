@@ -1,8 +1,7 @@
 using Adherium.Adherence.Api.Contracts;
-using Adherium.Adherence.Core.Contracts;
+using Adherium.Adherence.Core.Contracts.Services;
 using Adherium.Adherence.Core.Results;
 using Asp.Versioning;
-using Asp.Versioning.Builder;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Adherium.Adherence.Api.Endpoints;
@@ -13,14 +12,10 @@ public static class SensorLogEndpoints
     {
         ArgumentNullException.ThrowIfNull(app);
 
-        ApiVersionSet versionSet = app.NewApiVersionSet()
-            .HasApiVersion(new ApiVersion(1, 0))
-            .ReportApiVersions()
-            .Build();
-
+        // Versioning (the version set and the /api/v{version} prefix) is configured once in Program.cs;
+        // here we only declare the route suffix and which version these endpoints serve.
         RouteGroupBuilder v1 = app
-            .MapGroup("/api/v{version:apiVersion}/sensor-logs")
-            .WithApiVersionSet(versionSet)
+            .MapGroup("/sensor-logs")
             .MapToApiVersion(new ApiVersion(1, 0))
             .WithTags("Sensor Logs");
 
