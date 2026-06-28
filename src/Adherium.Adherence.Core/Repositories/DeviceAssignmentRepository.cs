@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
 using Adherium.Adherence.Core.Contracts.Repositories;
-using Adherium.Adherence.Core.Domain;
+using Adherium.Adherence.Core.Domain.Entities;
 
 namespace Adherium.Adherence.Core.Repositories;
 
@@ -17,6 +17,7 @@ public sealed class DeviceAssignmenRepository : IDeviceAssignmentRepository
     public void Add(DeviceAssignment assignment)
     {
         ArgumentNullException.ThrowIfNull(assignment);
+
         _bySerial.AddOrUpdate(
             assignment.DeviceSerial,
             _ => [assignment],

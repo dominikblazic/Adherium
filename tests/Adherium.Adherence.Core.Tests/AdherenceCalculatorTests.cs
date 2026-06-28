@@ -1,4 +1,5 @@
 using Adherium.Adherence.Core.Domain;
+using Adherium.Adherence.Core.Domain.Entities;
 using Adherium.Adherence.Core.Repositories;
 using Adherium.Adherence.Core.Services;
 using static Adherium.Adherence.Core.Tests.TestData;

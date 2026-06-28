@@ -1,4 +1,4 @@
-using Adherium.Adherence.Core.Domain;
+using Adherium.Adherence.Core.Domain.Entities;
 
 namespace Adherium.Adherence.Core.Contracts.Repositories;
 

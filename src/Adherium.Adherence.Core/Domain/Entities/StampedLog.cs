@@ -1,4 +1,6 @@
-namespace Adherium.Adherence.Core.Domain;
+using Adherium.Adherence.Core.Domain.Enums;
+
+namespace Adherium.Adherence.Core.Domain.Entities;
 
 /// <summary>
 /// Idempotency key for an ingested event: the device's serial plus its own sequence number.

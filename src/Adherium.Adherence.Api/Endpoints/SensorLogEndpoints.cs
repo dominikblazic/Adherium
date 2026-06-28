@@ -1,6 +1,6 @@
 using Adherium.Adherence.Api.Contracts;
 using Adherium.Adherence.Core.Contracts.Services;
-using Adherium.Adherence.Core.Results;
+using Adherium.Adherence.Core.Domain.Dtos.Results;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Http.HttpResults;
 

@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Adherium.Adherence.Core.Contracts.Repositories;
-using Adherium.Adherence.Core.Domain;
+using Adherium.Adherence.Core.Domain.Entities;
 
 namespace Adherium.Adherence.Api.Seeding;
 
@@ -15,7 +15,7 @@ public sealed partial class SampleDataSeeder(
     IDeviceAssignmentRepository deviceAssignmentRepository,
     ILogger<SampleDataSeeder> logger)
 {
-    private static readonly JsonSerializerOptions s_jsonOptions = new(JsonSerializerDefaults.Web)
+    private static readonly JsonSerializerOptions _jsonOptions = new(JsonSerializerDefaults.Web)
     {
         Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) },
     };
@@ -29,7 +29,7 @@ public sealed partial class SampleDataSeeder(
         }
 
         var json = File.ReadAllText(filePath);
-        var document = JsonSerializer.Deserialize<SampleDataDocument>(json, s_jsonOptions)
+        var document = JsonSerializer.Deserialize<SampleDataDocument>(json, _jsonOptions)
             ?? throw new InvalidOperationException($"Sample data at '{filePath}' could not be parsed.");
 
         foreach (var prescription in document.Prescriptions)

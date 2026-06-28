@@ -1,5 +1,5 @@
-using Adherium.Adherence.Core.Domain;
-using Adherium.Adherence.Core.Results;
+using Adherium.Adherence.Core.Domain.Dtos.Results;
+using Adherium.Adherence.Core.Domain.Entities;
 
 namespace Adherium.Adherence.Core.Contracts.Services;
 

@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
 using Adherium.Adherence.Core.Contracts.Repositories;
-using Adherium.Adherence.Core.Domain;
+using Adherium.Adherence.Core.Domain.Entities;
 
 namespace Adherium.Adherence.Core.Repositories;
 
@@ -10,11 +10,12 @@ public sealed class PrescriptionRepository : IPrescriptionRepository
 
     public Prescription? GetById(int id) => _byId.GetValueOrDefault(id);
 
-    public IReadOnlyCollection<Prescription> GetAll() => _byId.Values.ToList();
+    public IReadOnlyCollection<Prescription> GetAll() => [.. _byId.Values];
 
     public void Add(Prescription prescription)
     {
         ArgumentNullException.ThrowIfNull(prescription);
+
         _byId[prescription.Id] = prescription;
     }
 }

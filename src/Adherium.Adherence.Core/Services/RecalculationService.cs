@@ -1,7 +1,7 @@
 using Adherium.Adherence.Core.Contracts.Repositories;
 using Adherium.Adherence.Core.Contracts.Services;
-using Adherium.Adherence.Core.Domain;
-using Adherium.Adherence.Core.Results;
+using Adherium.Adherence.Core.Domain.Dtos.Results;
+using Adherium.Adherence.Core.Domain.Models;
 
 namespace Adherium.Adherence.Core.Services;
 

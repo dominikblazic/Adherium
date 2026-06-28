@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using Adherium.Adherence.Core.Domain;
+using Adherium.Adherence.Core.Domain.Models;
 
 namespace Adherium.Adherence.Api.Contracts;
 

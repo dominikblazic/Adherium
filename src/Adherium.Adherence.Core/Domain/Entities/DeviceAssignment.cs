@@ -1,4 +1,4 @@
-namespace Adherium.Adherence.Core.Domain;
+namespace Adherium.Adherence.Core.Domain.Entities;
 
 /// <summary>
 /// The temporal record of which prescription a device served over a time window.
@@ -11,8 +11,6 @@ public sealed record DeviceAssignment
     public required string DeviceSerial { get; init; }
     public required int PrescriptionId { get; init; }
     public required DateTimeOffset StartUtc { get; init; }
-
-    /// <summary><c>null</c> means the assignment is still active.</summary>
     public DateTimeOffset? EndUtc { get; init; }
 
     /// <summary>

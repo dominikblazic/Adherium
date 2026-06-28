@@ -1,7 +1,8 @@
 using Adherium.Adherence.Core.Contracts.Repositories;
 using Adherium.Adherence.Core.Contracts.Services;
 using Adherium.Adherence.Core.Domain;
-using Adherium.Adherence.Core.Results;
+using Adherium.Adherence.Core.Domain.Dtos.Results;
+using Adherium.Adherence.Core.Domain.Entities;
 
 namespace Adherium.Adherence.Core.Services;
 
@@ -41,11 +42,10 @@ public sealed class AdherenceCalculator(IPrescriptionRepository prescriptionRepo
             });
         }
 
-        return summaries
+        return [.. summaries
             .OrderBy(s => s.PatientId)
             .ThenBy(s => s.PrescriptionId)
-            .ThenBy(s => s.Date)
-            .ToList();
+            .ThenBy(s => s.Date)];
     }
 
     private static decimal? ComputeRate(Prescription prescription, int dosesTaken, int dosesPrescribed)

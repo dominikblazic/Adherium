@@ -1,6 +1,7 @@
-using Adherium.Adherence.Core.Domain;
+using Adherium.Adherence.Core.Domain.Entities;
+using Adherium.Adherence.Core.Domain.Enums;
 
-namespace Adherium.Adherence.Core.Results;
+namespace Adherium.Adherence.Core.Domain.Dtos.Results;
 
 /// <summary>Outcome of processing a single event in the batch.</summary>
 public enum ProcessingStatus
