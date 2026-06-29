@@ -6,10 +6,6 @@ using static Adherium.Adherence.Core.Tests.TestData;
 
 namespace Adherium.Adherence.Core.Tests;
 
-/// <summary>
-/// The heart of the exercise: turning stamped logs into daily adherence. These tests pin the
-/// clinical rules — what counts as a dose, how the rate is computed, and how relievers differ.
-/// </summary>
 public sealed class AdherenceCalculatorTests
 {
     private static AdherenceCalculator CalculatorFor(params Prescription[] prescriptions)
@@ -26,7 +22,6 @@ public sealed class AdherenceCalculatorTests
     [Fact]
     public void Controller_taking_exactly_the_schedule_is_100_percent()
     {
-        // 2 doses per admin x 2 admins/day = 4 prescribed; 4 actuations taken.
         var calc = CalculatorFor(Prescription(100, dosesPerAdmin: 2, timesPerDay: 2));
 
         var result = calc.Calculate(
@@ -46,9 +41,9 @@ public sealed class AdherenceCalculatorTests
     [Fact]
     public void Under_dosing_is_a_proportional_percentage()
     {
-        var calc = CalculatorFor(Prescription(200, dosesPerAdmin: 1, timesPerDay: 2)); // 2 prescribed
+        var calc = CalculatorFor(Prescription(200, dosesPerAdmin: 1, timesPerDay: 2));
 
-        var result = calc.Calculate([Stamped(200, "2026-03-06T09:00:00Z")]); // 1 taken
+        var result = calc.Calculate([Stamped(200, "2026-03-06T09:00:00Z")]); 
 
         Assert.Equal(50m, Assert.Single(result).AdherenceRate);
     }
@@ -56,8 +51,7 @@ public sealed class AdherenceCalculatorTests
     [Fact]
     public void Over_dosing_is_not_capped_at_100_percent()
     {
-        // Over-use is itself a clinically meaningful signal, so the rate is allowed to exceed 100.
-        var calc = CalculatorFor(Prescription(100, dosesPerAdmin: 2, timesPerDay: 2)); // 4 prescribed
+        var calc = CalculatorFor(Prescription(100, dosesPerAdmin: 2, timesPerDay: 2)); 
 
         var result = calc.Calculate(
         [
@@ -66,7 +60,7 @@ public sealed class AdherenceCalculatorTests
             Stamped(100, "2026-03-03T08:02:00Z", deviceLogId: 3),
             Stamped(100, "2026-03-03T20:00:00Z", deviceLogId: 4),
             Stamped(100, "2026-03-03T20:05:00Z", deviceLogId: 5),
-        ]); // 5 taken
+        ]); 
 
         Assert.Equal(125m, Assert.Single(result).AdherenceRate);
     }
@@ -74,9 +68,9 @@ public sealed class AdherenceCalculatorTests
     [Fact]
     public void Rate_is_rounded_to_two_decimal_places()
     {
-        var calc = CalculatorFor(Prescription(100, dosesPerAdmin: 1, timesPerDay: 3)); // 3 prescribed
+        var calc = CalculatorFor(Prescription(100, dosesPerAdmin: 1, timesPerDay: 3)); 
 
-        var result = calc.Calculate([Stamped(100, "2026-03-02T08:00:00Z")]); // 1/3 = 33.333...
+        var result = calc.Calculate([Stamped(100, "2026-03-02T08:00:00Z")]);
 
         Assert.Equal(33.33m, Assert.Single(result).AdherenceRate);
     }
@@ -84,7 +78,6 @@ public sealed class AdherenceCalculatorTests
     [Fact]
     public void Relievers_report_usage_but_no_adherence_rate()
     {
-        // PRN rescue medication: "percent of scheduled doses" is meaningless, so rate is null.
         var calc = CalculatorFor(Prescription(300, type: MedicationType.Reliever, patientId: 2));
 
         var day = Assert.Single(calc.Calculate(
@@ -94,13 +87,12 @@ public sealed class AdherenceCalculatorTests
         ]));
 
         Assert.Null(day.AdherenceRate);
-        Assert.Equal(2, day.DosesTaken); // usage is still surfaced
+        Assert.Equal(2, day.DosesTaken); 
     }
 
     [Fact]
     public void Only_actuations_count_as_doses()
     {
-        // PeakInhalationFlow / Unknown are stamped for traceability but never counted.
         var calc = CalculatorFor(Prescription(200, dosesPerAdmin: 1, timesPerDay: 2));
 
         var day = Assert.Single(calc.Calculate(
@@ -139,8 +131,8 @@ public sealed class AdherenceCalculatorTests
 
         var result = calc.Calculate(
         [
-            Stamped(100, "2026-03-02T23:30:00Z", deviceLogId: 1), // still the 2nd in UTC
-            Stamped(100, "2026-03-03T00:30:00Z", deviceLogId: 2), // now the 3rd in UTC
+            Stamped(100, "2026-03-02T23:30:00Z", deviceLogId: 1),
+            Stamped(100, "2026-03-03T00:30:00Z", deviceLogId: 2),
         ]);
 
         Assert.Equal(2, result.Count);

@@ -3,15 +3,11 @@ using System.Text.Json.Serialization;
 using Adherium.Adherence.Core.Contracts.Repositories;
 using Adherium.Adherence.Core.Domain.Entities;
 using Adherium.Adherence.Core.Domain.Enums;
+using Adherium.Adherence.Core.Extensions;
 
 namespace Adherium.Adherence.Api.Seeding;
 
-/// <summary>
-/// Seeds the in-memory prescription and device-assignment stores from the synthetic sample file
-/// (<c>sample-batch.json</c>, copied next to the app). The file's <c>batch.events</c> are not seeded —
-/// those are what you POST to the endpoint.
-/// </summary>
-public sealed partial class SampleDataSeeder(
+public sealed class SampleDataSeeder(
     IPrescriptionRepository prescriptionRepository,
     IDeviceAssignmentRepository deviceAssignmentRepository,
     ILogger<SampleDataSeeder> logger)
@@ -25,7 +21,7 @@ public sealed partial class SampleDataSeeder(
     {
         if (!File.Exists(filePath))
         {
-            LogSampleFileMissing(filePath);
+            logger.LogSampleFileMissing(filePath);
             return;
         }
 
@@ -43,14 +39,8 @@ public sealed partial class SampleDataSeeder(
             deviceAssignmentRepository.Add(assignment.ToDomain());
         }
 
-        LogSeeded(document.Prescriptions.Count, document.DeviceAssignments.Count);
+        logger.LogSeeded(document.Prescriptions.Count, document.DeviceAssignments.Count);
     }
-
-    [LoggerMessage(Level = LogLevel.Warning, Message = "Sample data file not found at {FilePath}; stores left empty.")]
-    private partial void LogSampleFileMissing(string filePath);
-
-    [LoggerMessage(Level = LogLevel.Information, Message = "Seeded {PrescriptionCount} prescriptions and {AssignmentCount} device assignments.")]
-    private partial void LogSeeded(int prescriptionCount, int assignmentCount);
 
     private sealed record SampleDataDocument
     {

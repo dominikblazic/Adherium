@@ -1,26 +1,18 @@
 <Project>
 
-  <!--
-    Shared build settings inherited by every project in the solution.
-    MSBuild discovers this file by walking up from each project directory, so it
-    lives at the repo root. The .slnx "Solution Items" folder only references it.
-  -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
 
-    <!-- Treat code quality seriously: warnings are errors, analyzers on. -->
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisLevel>latest-recommended</AnalysisLevel>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 
-    <!-- Reproducible builds. -->
     <Deterministic>true</Deterministic>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <!-- Don't fail the build for missing XML doc comments (CS1591). -->
     <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
 

@@ -77,7 +77,6 @@ public sealed class AttributionServiceTests
     [Fact]
     public void Assignment_window_is_end_inclusive()
     {
-        // Sample data uses 23:59:59 end-of-day ends; the final second must still attribute.
         var service = Build(
             [Assignment(1, "DEV-AAA", 100, "2026-03-01T00:00:00Z", "2026-03-04T23:59:59Z")],
             [Prescription(100)]);
@@ -90,7 +89,7 @@ public sealed class AttributionServiceTests
     public void Open_ended_assignment_covers_all_later_events()
     {
         var service = Build(
-            [Assignment(1, "DEV-AAA", 200, "2026-03-05T00:00:00Z")], // no end
+            [Assignment(1, "DEV-AAA", 200, "2026-03-05T00:00:00Z")],
             [Prescription(200)]);
 
         Assert.True(service.Resolve("DEV-AAA", Utc("2030-01-01T00:00:00Z")).IsAttributed);
@@ -99,7 +98,6 @@ public sealed class AttributionServiceTests
     [Fact]
     public void Overlapping_windows_prefer_the_most_recently_started_assignment()
     {
-        // Overlap is a data error; the tie-break is "most recent start wins".
         var service = Build(
             [
                 Assignment(1, "DEV-AAA", 100, "2026-03-01T00:00:00Z", "2026-03-10T23:59:59Z"),
@@ -115,7 +113,6 @@ public sealed class AttributionServiceTests
     [Fact]
     public void Assignment_pointing_at_a_missing_prescription_is_flagged()
     {
-        // Data-integrity case: the assignment exists but its prescription does not.
         var service = Build(
             [Assignment(1, "DEV-AAA", 999, "2026-03-01T00:00:00Z")],
             []);

@@ -16,7 +16,6 @@ public sealed class AttributionService(
             return AttributionResult.Failed(AttributionStatus.UnknownDevice);
         }
 
-        // If windows ever overlap (a data error), prefer the one that started most recently.
         var active = deviceAssignmentRepository.GetBySerial(deviceSerial)
             .Where(a => a.Covers(eventTimestampUtc))
             .OrderByDescending(a => a.StartUtc)

@@ -3,7 +3,6 @@ using Adherium.Adherence.Core.Results.Enums;
 
 namespace Adherium.Adherence.Core.Results;
 
-/// <summary>The result of resolving an event to a prescription.</summary>
 public readonly record struct AttributionResult(AttributionStatus Status, Prescription? Prescription)
 {
     public bool IsAttributed => Status == AttributionStatus.Attributed && Prescription is not null;
