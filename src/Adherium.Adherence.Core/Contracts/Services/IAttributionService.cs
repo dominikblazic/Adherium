@@ -1,4 +1,4 @@
-using Adherium.Adherence.Core.Services;
+using Adherium.Adherence.Core.Results;
 
 namespace Adherium.Adherence.Core.Contracts.Services;
 

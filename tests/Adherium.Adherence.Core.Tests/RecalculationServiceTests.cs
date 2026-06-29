@@ -1,6 +1,6 @@
-using Adherium.Adherence.Core.Domain.Dtos.Results;
-using Adherium.Adherence.Core.Domain.Entities;
+using Adherium.Adherence.Core.Domain.Enums;
 using Adherium.Adherence.Core.Repositories;
+using Adherium.Adherence.Core.Results.Enums;
 using Adherium.Adherence.Core.Services;
 using static Adherium.Adherence.Core.Tests.TestData;
 
@@ -33,10 +33,10 @@ public sealed class RecalculationServiceTests
 
         var result = service.Recalculate(
         [
-            Event("DEV-AAA", 11, "2026-03-02T08:00:00Z"),                       // processed
-            Event("DEV-AAA", 11, "2026-03-02T08:00:00Z"),                       // duplicate of above
-            Event("DEV-AAA", 40, "2026-03-08T10:00:00Z"),                       // gap -> unattributed
-            Event("DEV-ZZZ", 1, "2026-03-06T12:00:00Z"),                        // unknown device
+            Event("DEV-AAA", 11, "2026-03-02T08:00:00Z"),                       
+            Event("DEV-AAA", 11, "2026-03-02T08:00:00Z"),                       
+            Event("DEV-AAA", 40, "2026-03-08T10:00:00Z"),                       
+            Event("DEV-ZZZ", 1, "2026-03-06T12:00:00Z"),                        
         ]);
 
         Assert.Equal(4, result.Summary.Received);
@@ -53,7 +53,7 @@ public sealed class RecalculationServiceTests
         var result = service.Recalculate(
         [
             Event("DEV-AAA", 11, "2026-03-02T08:00:00Z"),
-            Event("DEV-AAA", 11, "2026-03-02T08:00:00Z"), // same EventKey -> ignored
+            Event("DEV-AAA", 11, "2026-03-02T08:00:00Z"), 
         ]);
 
         var day = Assert.Single(result.DailyAdherence);
@@ -71,9 +71,8 @@ public sealed class RecalculationServiceTests
 
         var service = BuildService();
         var first = service.Recalculate(batch);
-        var second = service.Recalculate(batch); // re-sent
+        var second = service.Recalculate(batch); 
 
-        // Summaries for the affected day are identical; the re-send is all duplicates.
         Assert.Equal(2, second.Summary.Duplicates);
         Assert.Equal(0, second.Summary.Processed);
         Assert.Equal(first.DailyAdherence.Single().DosesTaken, second.DailyAdherence.Single().DosesTaken);

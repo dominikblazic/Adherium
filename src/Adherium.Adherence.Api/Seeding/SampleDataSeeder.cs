@@ -2,6 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Adherium.Adherence.Core.Contracts.Repositories;
 using Adherium.Adherence.Core.Domain.Entities;
+using Adherium.Adherence.Core.Domain.Enums;
 
 namespace Adherium.Adherence.Api.Seeding;
 

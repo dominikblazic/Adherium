@@ -1,34 +1,9 @@
 using Adherium.Adherence.Core.Contracts.Repositories;
 using Adherium.Adherence.Core.Contracts.Services;
-using Adherium.Adherence.Core.Domain.Entities;
+using Adherium.Adherence.Core.Results;
+using Adherium.Adherence.Core.Results.Enums;
 
 namespace Adherium.Adherence.Core.Services;
-
-/// <summary>Why an event could not be attributed to a prescription.</summary>
-public enum AttributionStatus
-{
-    Attributed,
-
-    /// <summary>No assignment history exists for the serial at all.</summary>
-    UnknownDevice,
-
-    /// <summary>The device is known, but no assignment was active at the event time (a gap, or before/after).</summary>
-    NoActiveAssignment,
-
-    /// <summary>An assignment was found but its prescription is missing — a data integrity problem.</summary>
-    MissingPrescription,
-}
-
-/// <summary>The result of resolving an event to a prescription.</summary>
-public readonly record struct AttributionResult(AttributionStatus Status, Prescription? Prescription)
-{
-    public bool IsAttributed => Status == AttributionStatus.Attributed && Prescription is not null;
-
-    public static AttributionResult Attributed(Prescription prescription) =>
-        new(AttributionStatus.Attributed, prescription);
-
-    public static AttributionResult Failed(AttributionStatus status) => new(status, null);
-}
 
 public sealed class AttributionService(
     IDeviceAssignmentRepository deviceAssignmentRepository,

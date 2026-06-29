@@ -1,12 +1,9 @@
 using Adherium.Adherence.Core.Domain.Entities;
+using Adherium.Adherence.Core.Domain.Enums;
 using Adherium.Adherence.Core.Domain.Models;
 
 namespace Adherium.Adherence.Core.Tests;
 
-/// <summary>
-/// Concise builders for the domain objects the tests need. Defaults are sensible so each test only
-/// states the fields it actually cares about, keeping the intent of each case obvious.
-/// </summary>
 internal static class TestData
 {
     public static DateTimeOffset Utc(string iso) => DateTimeOffset.Parse(

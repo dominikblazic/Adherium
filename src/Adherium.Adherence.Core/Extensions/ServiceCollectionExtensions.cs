@@ -12,15 +12,13 @@ public static class ServiceCollectionExtensions
     {
         ArgumentNullException.ThrowIfNull(services);
 
-        // Stores hold state for the process lifetime, so they are singletons.
         services.AddSingleton<IPrescriptionRepository, PrescriptionRepository>();
         services.AddSingleton<IDeviceAssignmentRepository, DeviceAssignmenRepository>();
         services.AddSingleton<IStampedLogRepository, StampedLogRepository>();
 
-        // Services are stateless.
-        services.AddSingleton<IAttributionService, AttributionService>();
-        services.AddSingleton<IAdherenceCalculator, AdherenceCalculator>();
-        services.AddSingleton<IRecalculationService, RecalculationService>();
+        services.AddScoped<IAttributionService, AttributionService>();
+        services.AddScoped<IAdherenceCalculator, AdherenceCalculator>();
+        services.AddScoped<IRecalculationService, RecalculationService>();
 
         return services;
     }

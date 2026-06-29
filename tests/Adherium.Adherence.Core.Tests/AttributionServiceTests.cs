@@ -1,14 +1,11 @@
 using Adherium.Adherence.Core.Domain.Entities;
 using Adherium.Adherence.Core.Repositories;
+using Adherium.Adherence.Core.Results.Enums;
 using Adherium.Adherence.Core.Services;
 using static Adherium.Adherence.Core.Tests.TestData;
 
 namespace Adherium.Adherence.Core.Tests;
 
-/// <summary>
-/// Attribution is the crux of "recalculation on device reassignment": an event must resolve to the
-/// prescription that was active <em>at the event time</em>, not the device's current owner.
-/// </summary>
 public sealed class AttributionServiceTests
 {
     private static AttributionService Build(
@@ -33,7 +30,6 @@ public sealed class AttributionServiceTests
     [Fact]
     public void Event_resolves_to_the_prescription_active_at_that_instant()
     {
-        // DEV-AAA served Rx 100 in early March, then was reassigned to Rx 200.
         var service = Build(
             [
                 Assignment(1, "DEV-AAA", 100, "2026-03-01T00:00:00Z", "2026-03-04T23:59:59Z"),
@@ -65,7 +61,6 @@ public sealed class AttributionServiceTests
     [Fact]
     public void Event_in_a_gap_between_assignments_is_not_attributed()
     {
-        // Known device, but the event falls between two assignment windows (a reassignment gap).
         var service = Build(
             [
                 Assignment(1, "DEV-AAA", 200, "2026-03-05T00:00:00Z", "2026-03-07T23:59:59Z"),

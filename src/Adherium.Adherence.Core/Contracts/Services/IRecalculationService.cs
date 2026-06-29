@@ -1,5 +1,5 @@
-using Adherium.Adherence.Core.Domain.Dtos.Results;
 using Adherium.Adherence.Core.Domain.Models;
+using Adherium.Adherence.Core.Results;
 
 namespace Adherium.Adherence.Core.Contracts.Services;
 
