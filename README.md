@@ -90,3 +90,26 @@ tests/
 URL-segment versioning (`/api/v{version}/…`) via `Asp.Versioning`, defaulting to v1. This is the
 migration-friendly shape: new versions are added side-by-side without breaking existing device
 fleets in the field.
+
+## Fitting into a migration (Part 2)
+
+This is intentionally a thin **vertical slice** — just the recalculation responsibility — so it can
+be introduced alongside the existing system strangler-fig style rather than as a big-bang rewrite:
+
+- **Additive, versioned surface.** The new `/api/v1` endpoint is net-new; nothing the legacy system
+  exposes changes, so existing callers are unaffected.
+- **Shadow before cutover.** Because recalculation is deterministic and idempotent, the new service
+  can run in parallel ("dark launch") on the same events and have its output compared against the
+  legacy result before any traffic is switched over.
+- **Safe dual-delivery.** The `(deviceSerial, deviceLogId)` idempotency key means events can be
+  delivered to both the old and new paths during the transition without double-counting on retries
+  or replays.
+- **One source of truth.** The repository interfaces are the seam: the in-memory stores can be
+  swapped for adapters over the legacy database (or a read replica), so the slice reads/writes the
+  same data rather than forking it.
+- **Reversible.** Cutover can be done per-route or behind a feature flag and rolled back by routing
+  away — no schema break required.
+
+Together these let the slice be deployed incrementally and prove itself against real data —
+demonstrating not just the calculation, but how this slice would coexist with a live legacy system
+without breaking it.
