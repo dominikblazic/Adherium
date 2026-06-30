@@ -1,20 +1,20 @@
 # Adherium — Adherence Recalculation on Device Reassignment
 
-Take-home case (Part 1). A small .NET 10 service that ingests a batch of device sensor-log
+This is a small .NET 10 service that ingests a batch of device sensor-log
 events, attributes each one to the prescription that was active **for that device at the time of
 the event**, and returns recalculated daily adherence plus a per-event audit trail.
 
-The interesting part is *reassignment*: one physical inhaler can serve different prescriptions (and
-different patients) over time. A historical event must be scored against whoever owned the device
-**when the event happened**, not whoever owns it now.
+## Running the service
 
-## Running it
+The service can be run via terminal with:
 
 ```bash
 dotnet run --project src/Adherium.Adherence.Api
 ```
 
-The API seeds its in-memory stores from [`docs/sample-batch.json`](docs/sample-batch.json) at
+or opened through an IDE of choice and run immediately without prior configurations. 
+
+The API seeds its in-memory data from [`docs/sample-batch.json`](docs/sample-batch.json) at
 startup. In Development, the OpenAPI document is served at `/openapi/v1.json`.
 
 Post a batch (the `batch` object from the sample file is the request body):
@@ -28,10 +28,14 @@ curl -X POST http://localhost:5267/api/v1/sensor-logs/recalculate \
 JSON
 ```
 
+Or via Bruno/Postman at the same endpoint.
+
 The response has three parts: a `summary` (received / processed / duplicates / unattributed),
 the recalculated `dailyAdherence`, and an `outcomes` array explaining what happened to every event.
 
 ## Tests
+
+Unit tests for the service can be run via terminal with:
 
 ```bash
 dotnet test
@@ -61,7 +65,7 @@ tests/
   to the window that `Covers` its timestamp. Windows are treated as **end-inclusive**
   (`[start, end]`) to match the sample data's `23:59:59` end-of-day boundaries with explicit gaps.
 - **Idempotent ingestion.** `(deviceSerial, deviceLogId)` is the idempotency key. Re-sending a batch
-  doesn't double-count; duplicates are reported as `DuplicateIgnored`, and a re-sent batch yields
+  doesn't double-count with duplicates being reported as `DuplicateIgnored`, and a re-sent batch yields
   identical summaries.
 - **Recalculation is authoritative.** Affected days are recomputed from the full stored set, not
   just the incoming batch, so the returned summaries are always the current truth for those days.
@@ -82,7 +86,7 @@ tests/
 - **Sequence resets.** The idempotency key assumes `deviceLogId` is monotonic per device. A device
   refurbished and re-issued could reset its counter and collide. A device-side epoch would
   disambiguate.
-- **In-memory storage**, single process — per the brief. The store interfaces are the seam for a
+- **In-memory storage**, single process as per the brief. The repository interfaces are the seam for a
   real database.
 
 ## API versioning
@@ -93,23 +97,23 @@ fleets in the field.
 
 ## Fitting into a migration (Part 2)
 
-This is intentionally a thin **vertical slice** — just the recalculation responsibility — so it can
-be introduced alongside the existing system strangler-fig style rather than as a big-bang rewrite:
+This is intentionally a thin **vertical slice** with just the recalculation responsibility. It can
+be introduced alongside the existing system using strangler-fig pattern rather than as a big-bang rewrite:
 
-- **Additive, versioned surface.** The new `/api/v1` endpoint is net-new; nothing the legacy system
-  exposes changes, so existing callers are unaffected.
+- **Additive, versioned surface.** The new `/api/v1` endpoint is new so nothing the legacy system
+  exposes changes. Existing callers are unaffected.
 - **Shadow before cutover.** Because recalculation is deterministic and idempotent, the new service
-  can run in parallel ("dark launch") on the same events and have its output compared against the
+  can run in parallel on the same events and have its output compared against the
   legacy result before any traffic is switched over.
 - **Safe dual-delivery.** The `(deviceSerial, deviceLogId)` idempotency key means events can be
   delivered to both the old and new paths during the transition without double-counting on retries
   or replays.
-- **One source of truth.** The repository interfaces are the seam: the in-memory stores can be
+- **One source of truth.** The repository interfaces are the seam: the in-memory repositories can be
   swapped for adapters over the legacy database (or a read replica), so the slice reads/writes the
   same data rather than forking it.
 - **Reversible.** Cutover can be done per-route or behind a feature flag and rolled back by routing
-  away — no schema break required.
+  away which means no schema break is required.
 
-Together these let the slice be deployed incrementally and prove itself against real data —
-demonstrating not just the calculation, but how this slice would coexist with a live legacy system
+Together these let the slice be deployed incrementally and prove itself against real data which
+demonstrates not just the calculation, but how this slice would coexist with a live legacy system
 without breaking it.
