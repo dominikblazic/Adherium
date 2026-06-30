@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Adherium.Adherence.Api.Endpoints;
+using Adherium.Adherence.Api.Infrastructure;
 using Adherium.Adherence.Api.Seeding;
 using Adherium.Adherence.Core.Extensions;
 using Asp.Versioning;
@@ -11,6 +12,8 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<BadRequestExceptionHandler>();
+builder.Services.AddValidation();
 builder.Services.AddOpenApi();
 
 builder.Services
