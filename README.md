@@ -89,6 +89,29 @@ tests/
 - **In-memory storage**, single process as per the brief. The repository interfaces are the seam for a
   real database.
 
+## Assumptions (pending product/clinical confirmation)
+
+These points were raised through an email with questions with the product team. While
+waiting for the answers, v1 ships the assumptions below. Each notes where it would change.
+
+- **Assignments are authoritative going forward.** Each event is attributed and stamped with its
+  prescription at ingest; if assignment history later changes (a backdated reassignment, or a
+  corrected date), already-stored events are **not** re-attributed. Safe while assignments are only
+  ever set correctly forward. To support retroactive changes, store the raw events and re-derive
+  attribution on demand rather than stamping once.
+- **Only days with activity are reported.** A day with no actuations produces no row, so a
+  fully-missed scheduled day is currently indistinguishable from "no data" rather than shown as 0%.
+  Emitting explicit 0% rows for prescribed (controller) days would need a defined "as-of" date and
+  the prescription's active range.
+- **Adherence is puff-count per day, not per scheduled administration.** Doses are counted against
+  `DosesPerAdmin × TimesPerDay` for the day, so 4 morning puffs and none in the evening still scores
+  100%. Assessing dose timing/spacing would require evaluating each administration separately.
+- **Attribution is gated by the device-assignment window only.** A prescription's own
+  `StartUtc`/`EndUtc` do not additionally gate attribution — an event inside the assignment window
+  but outside the prescription's active dates still counts. Adding that check would make the
+  prescription dates a second gate.
+- **Idempotency assumes a stable `deviceLogId`** — see the *Sequence resets* caveat above.
+
 ## API versioning
 
 URL-segment versioning (`/api/v{version}/…`) via `Asp.Versioning`, defaulting to v1. This is the
