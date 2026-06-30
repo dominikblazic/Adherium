@@ -84,13 +84,12 @@ public sealed class RecalculationServiceTests
     {
         var service = BuildService();
 
-        service.Recalculate([Event("DEV-AAA", 11, "2026-03-02T08:00:00Z")]); // 1 dose stored
-        var second = service.Recalculate([Event("DEV-AAA", 12, "2026-03-02T20:00:00Z")]); // +1, same day
+        service.Recalculate([Event("DEV-AAA", 11, "2026-03-02T08:00:00Z")]); 
+        var second = service.Recalculate([Event("DEV-AAA", 12, "2026-03-02T20:00:00Z")]); 
 
-        // The second response reflects the full stored state for the affected day, not just its batch.
         var day = Assert.Single(second.DailyAdherence);
         Assert.Equal(2, day.DosesTaken);
-        Assert.Equal(50m, day.AdherenceRate); // 2 of 4 prescribed
+        Assert.Equal(50m, day.AdherenceRate); 
     }
 
     [Fact]
@@ -100,9 +99,9 @@ public sealed class RecalculationServiceTests
 
         var result = service.Recalculate(
         [
-            Event("DEV-AAA", 11, "2026-03-02T08:00:00Z"), // window 1 -> Rx 100 (patient 1)
-            Event("DEV-AAA", 30, "2026-03-06T09:00:00Z"), // window 2 -> Rx 200 (patient 1)
-            Event("DEV-AAA", 50, "2026-03-11T07:00:00Z"), // window 3 -> Rx 300 (patient 2, reliever)
+            Event("DEV-AAA", 11, "2026-03-02T08:00:00Z"), 
+            Event("DEV-AAA", 30, "2026-03-06T09:00:00Z"), 
+            Event("DEV-AAA", 50, "2026-03-11T07:00:00Z"), 
         ]);
 
         Assert.Equal(3, result.Summary.Processed);

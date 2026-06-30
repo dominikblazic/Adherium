@@ -45,14 +45,10 @@ public sealed class RecalculationService(
             var added = stampedLogRepository.TryAdd(stamped);
             outcomes.Add(added ? Processed(@event) : Duplicate(@event));
 
-            // A day is "affected" whenever this batch touches it — newly stored OR a re-sent
-            // duplicate — so re-sending the same batch returns identical (idempotent) summaries.
             affectedPrescriptions.Add(prescription.Id);
             affectedDays.Add((prescription.Id, stamped.UtcDate));
         }
 
-        // Recompute from the full stored set (not just this batch) so the summaries are always the
-        // authoritative recalculated state for the affected days.
         var logsToScore = stampedLogRepository
             .GetForPrescriptions(affectedPrescriptions)
             .Where(log => affectedDays.Contains((log.PrescriptionId, log.UtcDate)));

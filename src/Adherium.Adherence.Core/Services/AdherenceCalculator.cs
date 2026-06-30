@@ -14,8 +14,6 @@ public sealed class AdherenceCalculator(IPrescriptionRepository prescriptionRepo
 
         var summaries = new List<DailyAdherence>();
 
-        // One summary per (prescription, UTC day). Days are bucketed in UTC — see README for the
-        // timezone caveat (the clinically correct day boundary is the patient's local day).
         var groups = stampedLogs.GroupBy(log => (log.PrescriptionId, log.UtcDate));
 
         foreach (var group in groups)
@@ -23,10 +21,9 @@ public sealed class AdherenceCalculator(IPrescriptionRepository prescriptionRepo
             var prescription = prescriptionRepository.GetById(group.Key.PrescriptionId);
             if (prescription is null)
             {
-                continue; // Attribution guarantees the prescription exists; defensive only.
+                continue; 
             }
 
-            // Only actuations are doses; other event types are stamped for traceability but not counted.
             var dosesTaken = group.Count(log => log.EventType == EventType.Actuation);
             var dosesPrescribed = prescription.DailyPrescribedDoses;
 
@@ -50,13 +47,11 @@ public sealed class AdherenceCalculator(IPrescriptionRepository prescriptionRepo
 
     private static decimal? ComputeRate(Prescription prescription, int dosesTaken, int dosesPrescribed)
     {
-        // Relievers are PRN: a schedule-adherence percentage is not meaningful, so report usage only.
         if (!prescription.CountsTowardAdherence || dosesPrescribed <= 0)
         {
             return null;
         }
 
-        // Not capped at 100%: taking more than prescribed is itself a clinically meaningful signal.
         return Math.Round((decimal)dosesTaken / dosesPrescribed * 100m, 2);
     }
 }
